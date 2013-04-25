@@ -9,11 +9,11 @@ Author URI: http://alexis.nomine.fr/en/blog/
 License: MIT
 */
 
-/* TODO: 
-detect which plugin is in use (Yoast/Analyticator)
+/* TODO:
 remove post_type, tags, categories, author and year for yoast if set
 limit var to 128 caracters (key+value)
 add support for custom meta via get_post_meta()
+config page on wordpress (separate vs existing plugin page)
 */
 
 class WP_Analytics_Variables{
@@ -32,8 +32,10 @@ class WP_Analytics_Variables{
 		if( $this->params['debug'] )
 			add_action( 'wp_head', array( $this, 'debug' ) );
 		else {
-			add_filter( 'yoast-ga-custom-vars', array( $this, 'yoast_add_custom_vars' ), 10, 2 );
-			add_action( 'google_analyticator_extra_js_before', array( $this, 'analyticator_add_custom_vars' ) );
+			if( is_plugin_active( 'wordpress-seo/wp-seo.php' ) )
+				add_filter( 'yoast-ga-custom-vars', array( $this, 'yoast_add_custom_vars' ), 10, 2 );
+			if( is_plugin_active( 'google-analyticator/google-analyticator.php' ) )
+				add_action( 'google_analyticator_extra_js_before', array( $this, 'analyticator_add_custom_vars' ) );
 		}
 	}
 
